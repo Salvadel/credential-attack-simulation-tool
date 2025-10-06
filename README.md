@@ -13,7 +13,7 @@ Note that the program must be downloaded using Git Large File Storage (LFS). Alt
 
 <h2>Environments Used </h2>
 
-- <b>Windows 11</b>
+- <b>Windows 11</b> (21H2)
 
 <h2>Program walk-through:</h2>
 
