@@ -47,10 +47,6 @@ If a password is not found within the dictionary, the program automatically swit
 - **rockyou.txt**
 - **Git Large File Storage (LFS)**
 
-## Environment
-
-- **Windows 11 (21H2)**
-
 ## Installation
 
 ### Clone with Git LFS
