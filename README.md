@@ -105,7 +105,7 @@ The program looks for a `dictionaries` folder next to the Python files themselve
  
 #### Launch the program and enter the number of passwords to test
 <p align="center">
-<img src="images/cli-launch.png" width="80%">
+<img src="images/cli-main.png" width="80%">
 </p>
 
 #### Enter the passwords for analysis
