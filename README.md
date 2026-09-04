@@ -5,6 +5,7 @@ A Python-based cybersecurity project that simulates real-world credential attack
 <p align="center">
 <img src="images/gui-main.png" width="80%">
 </p>
+
 ## Overview
  
 This project is a password auditing and attack simulation utility written in Python.
@@ -106,28 +107,34 @@ The program looks for a `dictionaries` folder next to the Python files themselve
 <p align="center">
 <img src="images/cli-launch.png" width="80%">
 </p>
+
 #### Enter the passwords for analysis
 <p align="center">
 <img src="images/cli-password-entry.png" width="80%">
 </p>
+
 #### View attack results and statistics
 <p align="center">
 <img src="images/cli-results.png" width="80%">
 </p>
+
 ### Desktop GUI
  
 #### Main window on launch
 <p align="center">
 <img src="images/gui-main.png" width="80%">
 </p>
+
 #### Add one or more passwords to test
 <p align="center">
 <img src="images/gui-passwords-added.png" width="80%">
 </p>
+
 #### Results in the color-coded activity log
 <p align="center">
 <img src="images/gui-results.png" width="80%">
 </p>
+
 ## Educational Purpose
  
 This project was created for educational and cybersecurity research purposes only.
