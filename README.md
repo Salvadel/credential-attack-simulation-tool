@@ -1,6 +1,6 @@
 <h1 align="center">Credential Attack Simulation Tool</h1>
 <p align="center">
-A Python-based cybersecurity project that simulates real-world credential attack techniques using dictionary and brute-force password cracking methods — available as both a command-line tool and a desktop GUI application.
+A Python-based cybersecurity project that simulates real-world credential attack techniques using dictionary and brute-force password cracking methods – available as both a command-line tool and a desktop GUI application.
 </p>
 <p align="center">
 <img src="images/gui-main.png" width="80%">
