@@ -1,159 +1,221 @@
 <h1 align="center">Credential Attack Simulation Tool</h1>
+
 <p align="center">
-A Python-based cybersecurity project that simulates real-world credential attack techniques using dictionary and brute-force password cracking methods – available as both a command-line tool and a desktop GUI application.
+A Python-based cybersecurity tool that simulates password attacks using dictionary and brute-force techniques. Available as both a desktop GUI and command-line application. Avaliable for both Windows and Linux environments.
 </p>
+
 <p align="center">
 <img src="images/gui-main.png" width="80%">
 </p>
 
 ## Overview
- 
-This project is a password auditing and attack simulation utility written in Python.
-It demonstrates how weak passwords can be compromised through:
- 
-- Dictionary attacks using the `rockyou.txt` leaked password dataset
-- Brute-force attacks using generated character combinations
-The tool accepts up to **100 user-provided passwords** and attempts to crack them while measuring:
- 
-- Total number of attempts
-- Time elapsed
-- Attack method used
-- Password discovery status
-If a password is not found within the dictionary, the program automatically switches to a brute-force engine that generates combinations using:
- 
-- Uppercase letters
-- Lowercase letters
-- Numbers
-- Symbols
-> Brute-force attempts are limited to passwords up to 8 characters in length due to computational complexity. Longer passwords are flagged as too long for brute force rather than attempted.
- 
-The project ships two interchangeable front ends built on the same attack logic:
- 
-- **`password_cracker.py`** — the original interactive command-line workflow
-- **`password_cracker_gui.py`** — a lightweight desktop GUI (built with Python's standard-library `tkinter`, no extra installs required)
-Both share `password_cracker_core.py`, so the dictionary attack, brute-force engine, and timing logic behave identically regardless of which interface you use.
- 
-## Features
- 
-- Dictionary-based password cracking
-- Brute-force password generation engine
-- Performance timing and statistics
-- Multi-password testing support
-- Interactive CLI workflow with a restart option for repeated testing
-- Desktop GUI with:
-  - A live, color-coded activity log (cracked / skipped / error at a glance)
-  - A Stop button that safely cancels a running brute-force search mid-attack
-  - A confirmation prompt before starting any brute-force search large enough to take a very long time
-  - A window that sizes itself to your screen automatically
-- Uses real leaked credential datasets
-- Wordlist location is auto-detected next to the program — no path to edit, works the same on any machine
-## Technologies Used
- 
-### Languages
-- **Python 3.9+**
-### Libraries
-- Python standard library only — `tkinter` for the GUI, no third-party packages required
-### Utilities / Datasets
-- **rockyou.txt**
-- **Git Large File Storage (LFS)**
-## Installation
- 
-### Requirements
-- Python 3.9 or newer
-- On Linux, the GUI requires the `tkinter` system package, which isn't always bundled by default:
-```bash
-  sudo apt install python3-tk
-```
-  (Windows and macOS installs from python.org include `tkinter` already.)
- 
-### Clone with Git LFS
-This project uses Git Large File Storage (LFS) for the `rockyou.txt` wordlist.
- 
-```bash
-git lfs install
-git clone https://github.com/Salvadel/credential-attack-simulation-tool.git
-```
- 
-### Running the tool
-```bash
-# Command-line version
-python3 password_cracker.py
- 
-# Desktop GUI version
-python3 password_cracker_gui.py
-```
- 
-`password_cracker_core.py` must stay in the same folder as whichever front end you run — it holds the shared attack logic both interfaces call into.
- 
-## Alternative Setup
- 
-If Git LFS is not installed:
- 
-1. Download the repository manually from GitHub
-2. Download the `rockyou.txt` wordlist:
-   https://weakpass.com/wordlists/rockyou.txt
-3. Place it at:
-```plaintext
-src/dictionaries/rockyou.txt
-```
- 
-The program looks for a `dictionaries` folder next to the Python files themselves (not the folder you happen to launch it from), so as long as `rockyou.txt` sits alongside the scripts in that structure, it resolves correctly regardless of how or where you run it from.
- 
-## Program Walkthrough
- 
-### Command-line interface
- 
-#### Launch the program and enter the number of passwords to test
-<p align="center">
-<img src="images/cli-main.png" width="80%">
-</p>
 
-#### Enter the passwords for analysis
-<p align="center">
-<img src="images/cli-password-entry.png" width="80%">
-</p>
+The **Credential Attack Simulation Tool** is an educational password auditing program designed to demonstrate how passwords can be recovered using common credential attack techniques.
 
-#### View attack results and statistics
-<p align="center">
-<img src="images/cli-results.png" width="80%">
-</p>
+The program follows a two-stage attack process:
 
-### Desktop GUI
- 
-#### Main window on launch
+1. **Dictionary Attack** – Tests the target passwords against a user-provided password wordlist.
+2. **Brute-Force Attack** – If a password is not found in the dictionary, the program attempts to generate character combinations until the password is found or the configured length limit is reached.
+
+The tool supports testing up to **100 passwords** at a time and records:
+
+* Number of attempts
+* Time elapsed
+* Attack method used
+* Whether the password was discovered
+
+The brute-force engine can generate combinations using:
+
+* Uppercase letters
+* Lowercase letters
+* Numbers
+* Symbols
+
+Brute-force attacks are limited to passwords of **8 characters or fewer** because the search space becomes extremely large as password length increases. Passwords longer than the limit are reported rather than brute-forced.
+
+## Key Features
+
+* Dictionary-based password attacks
+* Automatic fallback to brute force
+* Support for multiple passwords
+* Attack timing and attempt statistics
+* GUI and CLI interfaces using the same core engine
+* GUI activity log with color-coded results
+* Stop button for cancelling long-running brute-force attacks
+* Confirmation before starting potentially long brute-force searches
+* User-selectable password dictionaries
+* Prebuilt versions available for Windows and Linux
+
+## How It Works
+
+```text
+                Start
+                  |
+                  v
+          Select Dictionary
+                  |
+                  v
+           Enter Passwords
+                  |
+                  v
+          Dictionary Attack
+                  |
+          +-------+-------+
+          |               |
+       Found          Not Found
+          |               |
+          v               v
+        Result       Brute-Force Attack
+                          |
+                    +-----+-----+
+                    |           |
+                  Found      Not Found
+                    |           |
+                    v           v
+                  Result    Report Result
+```
+
+## Using the GUI
+
+The GUI is designed for a simple workflow:
+
+1. Launch the program.
+2. Click **Browse** and select a password dictionary.
+3. Enter one or more passwords to test.
+4. Start the attack.
+5. Review the results in the activity log.
+
+The example screenshots use **`rockyou.txt` (2024 edition)** as the password dictionary. You can use another newline-separated password list instead.
+
+### Main window
+
 <p align="center">
 <img src="images/gui-main.png" width="80%">
 </p>
 
-#### Add one or more passwords to test
+### Add passwords for testing
+
 <p align="center">
 <img src="images/gui-passwords-added.png" width="80%">
 </p>
 
-#### Results in the color-coded activity log
+### View attack results
+
 <p align="center">
 <img src="images/gui-results.png" width="80%">
 </p>
 
+## Command-Line Interface
+
+The project also includes a command-line version with the same underlying attack logic.
+
+### Launch the program
+
+```bash
+python3 password_cracker.py
+```
+
+The CLI walks through the password-testing process interactively and displays the attack results and statistics in the terminal.
+
+## Downloads
+
+Prebuilt versions are available for:
+
+* **Windows**
+* **Linux**
+
+Download the appropriate release from the repository's **Releases** section if you do not want to run the Python source code directly.
+
+## Running From Source
+
+### Requirements
+
+* Python 3.9 or newer
+* `tkinter` for the GUI
+
+On Debian/Ubuntu-based Linux distributions:
+
+```bash
+sudo apt install python3-tk
+```
+
+Windows Python installations from python.org normally include `tkinter`.
+
+### Run the GUI
+
+```bash
+python3 password_cracker_gui.py
+```
+
+### Run the CLI
+
+```bash
+python3 password_cracker.py
+```
+
+The following files make up the core application:
+
+```text
+password_cracker.py          # Command-line interface
+password_cracker_gui.py      # Desktop GUI
+password_cracker_core.py     # Shared attack logic
+```
+
+`password_cracker_core.py` must remain available to the GUI and CLI because both interfaces use it for the dictionary attack, brute-force engine, and timing logic.
+
+## Password Dictionaries
+
+The program accepts a user-provided password dictionary.
+
+For example:
+
+```text
+rockyou.txt
+```
+
+The wordlist should contain one password per line.
+
+The tool does **not** require `rockyou.txt` specifically. Any compatible password dictionary can be selected through the GUI or provided through the CLI workflow.
+
+## Technologies
+
+### Language
+
+* **Python 3.9+**
+
+### Libraries
+
+* Python standard library
+* `tkinter` for the desktop GUI
+
+No third-party Python packages are required to run the source code.
+
+### Dataset
+
+* `rockyou.txt` or another user-provided password dictionary
+
 ## Educational Purpose
- 
-This project was created for educational and cybersecurity research purposes only.
-It is intended to demonstrate:
- 
-- Password security weaknesses
-- Credential attack methodologies
-- Brute-force attack limitations
-- The importance of strong password practices
-Do not use this tool against systems or accounts without explicit authorization.
- 
+
+This project was created for educational and cybersecurity research purposes.
+
+It demonstrates:
+
+* Password security weaknesses
+* Dictionary-based credential attacks
+* Brute-force attack techniques
+* The impact of password length and complexity
+* The computational limitations of password cracking
+
+**Only use this tool with passwords, systems, or accounts that you own or have explicit authorization to test.**
+
 ## Future Improvements
- 
-Potential future enhancements include:
- 
-- Multiprocessing brute force to use multiple CPU cores for real speed (current threading keeps the GUI responsive, but doesn't parallelize the search itself)
-- GPU acceleration
-- Hash cracking support (currently compares plaintext, matching the original attack model)
-- Password entropy analysis
-- Exportable reports
-- Standalone packaged executables (e.g. via PyInstaller) so the tool can run without a Python install
-- Custom wordlist presets beyond rockyou.txt
+
+Possible future enhancements include:
+
+* Multiprocessing for faster brute-force searches
+* GPU-accelerated cracking
+* Hash-based password cracking
+* Password entropy analysis
+* Exportable attack reports
+* Additional wordlist presets
+* Expanded configuration options for brute-force character sets
