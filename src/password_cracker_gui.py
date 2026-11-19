@@ -39,7 +39,6 @@ from pathlib import Path
 from tkinter import filedialog, font as tkfont, messagebox, ttk
 
 from password_cracker_core import (
-    DEFAULT_DICTIONARY_PATH,
     PasswordInfo,
     run_attack,
     validate_password,
@@ -385,7 +384,7 @@ class PasswordCrackerGUI:
         dict_row = ttk.Frame(dict_card, style="Card.TFrame")
         dict_row.pack(fill="x")
 
-        self.dict_path_var = tk.StringVar(value=str(DEFAULT_DICTIONARY_PATH))
+        self.dict_path_var = tk.StringVar(value="")
         ttk.Entry(dict_row, textvariable=self.dict_path_var).pack(
             side="left", fill="x", expand=True, ipady=2
         )
@@ -395,8 +394,7 @@ class PasswordCrackerGUI:
 
         ttk.Label(
             dict_card,
-            text="# auto-detected next to this program - works on any machine, "
-            "no path to edit.",
+            text="# select your own .txt wordlist with BROWSE",
             style="Caption.TLabel",
             wraplength=520,
         ).pack(anchor="w", pady=(6, 0))
@@ -506,6 +504,9 @@ class PasswordCrackerGUI:
                 "and !@#$*_",
             )
             return
+        if len(self.passwords) >= 100:
+            messagebox.showwarning("Password limit", "You can test up to 100 passwords per run.")
+            return
         self.passwords.append(pw)
         self._refresh_listbox()
         self.password_var.set("")
@@ -517,7 +518,10 @@ class PasswordCrackerGUI:
         self._refresh_listbox()
 
     def _browse_dictionary(self) -> None:
-        path = filedialog.askopenfilename(title="Select wordlist file")
+        path = filedialog.askopenfilename(
+            title="Select .txt wordlist",
+            filetypes=[("Text wordlists", "*.txt"), ("All files", "*.*")],
+        )
         if path:
             self.dict_path_var.set(path)
 
@@ -568,6 +572,9 @@ class PasswordCrackerGUI:
         try:
             while True:
                 pw, keyspace = self.confirm_request_queue.get_nowait()
+                if self.stop_event.is_set():
+                    self.confirm_response_queue.put(False)
+                    continue
                 proceed = messagebox.askyesno(
                     "Large search",
                     f"The dictionary attack didn't find '{'*' * len(pw)}' "
@@ -588,7 +595,14 @@ class PasswordCrackerGUI:
             messagebox.showwarning("No passwords", "Add at least one password to test first.")
             return
 
-        dictionary_path = Path(self.dict_path_var.get().strip() or str(DEFAULT_DICTIONARY_PATH))
+        selected_wordlist = self.dict_path_var.get().strip()
+        if not selected_wordlist or not Path(selected_wordlist).is_file():
+            messagebox.showerror(
+                "Invalid wordlist",
+                "Choose an existing password dictionary file with Browse before starting.",
+            )
+            return
+        dictionary_path = Path(selected_wordlist)
         password_infos = [PasswordInfo(password=pw) for pw in self.passwords]
 
         self.stop_event.clear()
@@ -601,7 +615,12 @@ class PasswordCrackerGUI:
             # Runs on the worker thread: hand off to the main thread via
             # the queues above and block until it answers.
             self.confirm_request_queue.put((pw, keyspace))
-            return self.confirm_response_queue.get()
+            while not self.stop_event.is_set():
+                try:
+                    return self.confirm_response_queue.get(timeout=0.1)
+                except queue.Empty:
+                    pass
+            return False
 
         def worker() -> None:
             try:
