@@ -33,6 +33,7 @@ Design notes:
 from __future__ import annotations
 
 import queue
+import sys
 import threading
 import tkinter as tk
 from pathlib import Path
@@ -43,6 +44,44 @@ from password_cracker_core import (
     run_attack,
     validate_password,
 )
+
+def _configure_native_window(root: tk.Tk) -> None:
+    """Set the native app icon and dark Windows title bar; leave GUI widgets untouched."""
+    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent))
+    icon_path = base / "assets" / "app_icon.ico"
+    if icon_path.is_file():
+        try:
+            root.iconbitmap(default=str(icon_path))
+        except tk.TclError:
+            pass  # Not every Tk/platform combination supports ICO icons.
+
+    if sys.platform != "win32":
+        return
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        root.update_idletasks()
+        user32 = ctypes.windll.user32
+        dwmapi = ctypes.windll.dwmapi
+        user32.GetAncestor.argtypes = [wintypes.HWND, wintypes.UINT]
+        user32.GetAncestor.restype = wintypes.HWND
+        hwnd = user32.GetAncestor(root.winfo_id(), 2)  # GA_ROOT: native top-level frame
+        if not hwnd:
+            return
+        enabled = ctypes.c_int(1)
+        for attribute in (20, 19):  # Windows 10/11, with older-build fallback
+            if dwmapi.DwmSetWindowAttribute(hwnd, attribute, ctypes.byref(enabled), 4) == 0:
+                break
+        # Windows 11 supports explicit caption colors. Earlier versions
+        # ignore these settings and retain their own dark-mode caption.
+        caption_color = ctypes.c_uint(0x00101010)  # COLORREF: #101010
+        text_color = ctypes.c_uint(0x00FFFFFF)
+        dwmapi.DwmSetWindowAttribute(hwnd, 35, ctypes.byref(caption_color), 4)
+        dwmapi.DwmSetWindowAttribute(hwnd, 36, ctypes.byref(text_color), 4)
+    except (AttributeError, OSError, ValueError):
+        pass  # Native decoration is optional, not required to run the tool.
+
 
 DONE_SENTINEL = "\0__ATTACK_DONE__\0"
 
@@ -110,7 +149,8 @@ def _ascii_banner(lines: list[str], padding: int = 2) -> str:
 class PasswordCrackerGUI:
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
-        self.root.title("password_cracker.py")
+        self.root.title("Credential Attack Simulation Tool")
+        _configure_native_window(self.root)
         self._size_window()
         self.root.minsize(560, 560)
         self.root.configure(bg=BG_APP)
