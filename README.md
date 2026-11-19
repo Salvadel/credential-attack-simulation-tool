@@ -1,11 +1,11 @@
 <h1 align="center">Credential Attack Simulation Tool</h1>
 
 <p align="center">
-A Python-based cybersecurity tool that simulates password attacks using dictionary and brute-force techniques. Available as both a desktop GUI and command-line application. Avaliable for both Windows and Linux environments.
+A Python-based cybersecurity tool that simulates password attacks using dictionary and brute-force techniques. Available as both a desktop GUI and command-line application. Source runs on Windows and Linux with Python and tkinter.
 </p>
 
 <p align="center">
-<img src="images/gui-main.png" width="80%">
+<img src="images/gui-main.png" width="60%">
 </p>
 
 ## Overview
@@ -23,6 +23,8 @@ The tool supports testing up to **100 passwords** at a time and records:
 * Time elapsed
 * Attack method used
 * Whether the password was discovered
+
+For each target, an attempt represents one usable dictionary candidate or brute-force combination. Blank dictionary lines do not count. Brute-force totals include prior unsuccessful dictionary attempts; the overall total sums the per-target attempt counts rather than counting unique candidate strings once. Per-target elapsed times include both phases.
 
 The brute-force engine can generate combinations using:
 
@@ -85,24 +87,26 @@ The GUI is designed for a simple workflow:
 4. Start the attack.
 5. Review the results in the activity log.
 
-The example screenshots use **`rockyou.txt` (2024 edition)** as the password dictionary. You can use another newline-separated password list instead.
+The GUI requires a readable local wordlist file before starting. The CLI also accepts a manually entered path.
+
+The example screenshots illustrate a local wordlist such as `rockyou.txt`. Select any compatible newline-separated text file.
 
 ### Main window
 
 <p align="center">
-<img src="images/gui-main.png" width="80%">
+<img src="images/gui-main.png" width="60%">
 </p>
 
 ### Add passwords for testing
 
 <p align="center">
-<img src="images/gui-passwords-added.png" width="80%">
+<img src="images/gui-passwords-added.png" width="60%">
 </p>
 
 ### View attack results
 
 <p align="center">
-<img src="images/gui-results.png" width="80%">
+<img src="images/gui-results.png" width="60%">
 </p>
 
 ## Command-Line Interface
@@ -112,19 +116,14 @@ The project also includes a command-line version with the same underlying attack
 ### Launch the program
 
 ```bash
-python3 password_cracker.py
+python3 src/password_cracker.py
 ```
 
 The CLI walks through the password-testing process interactively and displays the attack results and statistics in the terminal.
 
 ## Downloads
 
-Prebuilt versions are available for:
-
-* **Windows**
-* **Linux**
-
-Download the appropriate release from the repository's **Releases** section if you do not want to run the Python source code directly.
+If compiled Windows or Linux executables have been published to the repository's **Releases** section, they can be used instead of running Python directly. **Source-code fixes in this review do not update previously published executables; those builds must be rebuilt and tested separately.**
 
 ## Running From Source
 
@@ -144,13 +143,13 @@ Windows Python installations from python.org normally include `tkinter`.
 ### Run the GUI
 
 ```bash
-python3 password_cracker_gui.py
+python3 src/password_cracker_gui.py
 ```
 
 ### Run the CLI
 
 ```bash
-python3 password_cracker.py
+python3 src/password_cracker.py
 ```
 
 The following files make up the core application:
@@ -193,6 +192,16 @@ No third-party Python packages are required to run the source code.
 ### Dataset
 
 * `rockyou.txt` or another user-provided password dictionary
+
+## Tests
+
+From the repository root, run the built-in regression suite:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The suite checks dictionary matches, duplicate targets, attempt totals, invalid wordlists, search limits, and brute-force fallback. GUI/CLI smoke testing and rebuilding compiled executables are separate steps.
 
 ## Educational Purpose
 
