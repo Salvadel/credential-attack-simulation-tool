@@ -1,7 +1,7 @@
 <h1 align="center">Credential Attack Simulation Tool</h1>
 
 <p align="center">
-A Python-based cybersecurity tool that simulates password attacks using dictionary and brute-force techniques. Available as both a desktop GUI and command-line application. Source runs on Windows and Linux with Python and tkinter.
+A Python-based cybersecurity tool that simulates password attacks using dictionary and brute-force techniques. Available as an executable for both Windows and Linux environments.
 </p>
 
 <p align="center">
