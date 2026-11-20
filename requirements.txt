@@ -1,0 +1,5 @@
+# Runtime dependencies: none (Python standard library only).
+# Tkinter is required for the GUI. It usually comes with Windows Python,
+# but some Linux distributions package it separately (e.g. python3-tk).
+# PyInstaller is an optional build tool, not a runtime requirement:
+#   python -m pip install pyinstaller
